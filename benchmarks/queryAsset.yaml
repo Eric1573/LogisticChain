@@ -1,0 +1,18 @@
+test:
+  workers:
+    number: 5
+  rounds:
+    - label: queryAsset
+      description: queryAsset Benchmark
+      txNumber: 10000
+      rateControl:
+        type: linear-rate
+        opts: {
+          startingTps: 25,
+          finishingTps: 50
+        }
+      workload:
+        module: workload/queryAsset.js
+
+     
+    

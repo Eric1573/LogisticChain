@@ -1,0 +1,16 @@
+test:
+  workers:
+    number: 1  
+  rounds:
+    - label: createUser
+      description: createUser Benchmark
+      txNumber: 500
+      rateControl:
+        type: fixed-rate
+        opts:
+          tps: 20
+      workload:
+        module: workload/createUser.js
+
+     
+    

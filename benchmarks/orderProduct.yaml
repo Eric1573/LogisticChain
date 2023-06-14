@@ -1,0 +1,16 @@
+test:
+  workers:
+    number: 5   
+  rounds:
+    - label: orderProduct
+      description: orderProduct Benchmark
+      txNumber: 500
+      rateControl:
+        type: fixed-rate
+        opts:
+          tps: 25
+      workload:
+        module: workload/orderProduct.js
+
+     
+    

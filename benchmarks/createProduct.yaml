@@ -1,0 +1,16 @@
+test:
+  workers:
+    number: 5   
+  rounds:
+    - label: createProduct
+      description: createProduct Benchmark
+      txNumber: 500
+      rateControl:
+        type: fixed-rate
+        opts:
+          tps: 25
+      workload:
+        module: workload/createProduct.js
+
+     
+    

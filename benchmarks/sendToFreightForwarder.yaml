@@ -1,0 +1,16 @@
+test:
+  workers:
+    number: 5   
+  rounds:
+    - label: sendToFreightForwarder
+      description: sendToFreightForwarder Benchmark
+      txNumber: 500
+      rateControl:
+        type: fixed-rate
+        opts:
+          tps: 25
+      workload:
+        module: workload/sendToFreightForwarder.js
+
+     
+    
