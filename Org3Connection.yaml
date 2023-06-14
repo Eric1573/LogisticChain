@@ -1,0 +1,35 @@
+---
+name: test-network-org3
+version: 1.0.0
+client:
+  organization: Org3
+  connection:
+    timeout:
+      peer:
+        endorser: '300'
+organizations:
+  Org1:
+    mspid: Consignee
+    peers:
+    - peer0.consignee.demo.com
+    certificateAuthorities:
+    - ca.consignee.demo.com
+peers:
+  peer0.consignee.demo.com:
+    url: grpcs://localhost:8051
+    tlsCACerts:
+      path: organizations/peerOrganizations/consignee.demo.com/tlsca/tlsca.consignee.demo.com-cert.pem
+    grpcOptions:
+      ssl-target-name-override: peer0.consignee.demo.com
+      hostnameOverride: peer0.consignee.demo.com
+certificateAuthorities:
+  ca.consignee.demo.com:
+    url: https://localhost:11054
+    caName: ca-org3
+    tlsCACerts:
+      path: organizations/peerOrganizations/consignee.demo.com/tlsca/tlsca.consignee.demo.com-cert.pem
+    httpOptions:
+      verify: false
+    registrar:
+    - enrollId: admin
+      enrollSecret: adminpw

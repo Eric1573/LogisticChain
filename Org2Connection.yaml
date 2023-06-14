@@ -1,0 +1,73 @@
+---
+name: test-network-org2
+version: 1.0.0
+client:
+  organization: Org2
+  connection:
+    timeout:
+      peer:
+        endorser: '300'
+organizations:
+  Org2:
+    mspid: MiddleMen
+    peers:
+    - peer0.middlemen.demo.com
+    - peer1.middlemen.demo.com
+    - peer2.middlemen.demo.com
+    - peer3.middlemen.demo.com
+    - peer4.middlemen.demo.com
+
+    certificateAuthorities:
+    - ca.middlemen.demo.com
+peers:
+  peer0.middlemen.demo.com:
+    url: grpcs://localhost:3051
+    tlsCACerts:
+      path: organizations/peerOrganizations/middlemen.demo.com/tlsca/tlsca.middlemen.demo.com-cert.pem
+    grpcOptions:
+      ssl-target-name-override: peer0.middlemen.demo.com
+      hostnameOverride: peer0.middlemen.demo.com
+
+  peer1.middlemen.demo.com:
+    url: grpcs://localhost:4051
+    tlsCACerts:
+      path: organizations/peerOrganizations/middlemen.demo.com/tlsca/tlsca.middlemen.demo.com-cert.pem
+    grpcOptions:
+      ssl-target-name-override: peer1.middlemen.demo.com
+      hostnameOverride: peer1.middlemen.demo.com
+
+  peer2.middlemen.demo.com:
+    url: grpcs://localhost:5051
+    tlsCACerts:
+      path: organizations/peerOrganizations/middlemen.demo.com/tlsca/tlsca.middlemen.demo.com-cert.pem
+    grpcOptions:
+      ssl-target-name-override: peer2.middlemen.demo.com
+      hostnameOverride: peer2.middlemen.demo.com
+
+  peer3.middlemen.demo.com:
+    url: grpcs://localhost:6051
+    tlsCACerts:
+      path: organizations/peerOrganizations/middlemen.demo.com/tlsca/tlsca.middlemen.demo.com-cert.pem
+    grpcOptions:
+      ssl-target-name-override: peer3.middlemen.demo.com
+      hostnameOverride: peer3.middlemen.demo.com
+  
+  peer4.middlemen.demo.com:
+    url: grpcs://localhost:7051
+    tlsCACerts:
+      path: organizations/peerOrganizations/middlemen.demo.com/tlsca/tlsca.middlemen.demo.com-cert.pem
+    grpcOptions:
+      ssl-target-name-override: peer4.middlemen.demo.com
+      hostnameOverride: peer4.middlemen.demo.com
+
+certificateAuthorities:
+  ca.middlemen.demo.com:
+    url: https://localhost:8054
+    caName: ca-org2
+    tlsCACerts:
+      path: organizations/peerOrganizations/middlemen.demo.com/tlsca/tlsca.middlemen.demo.com-cert.pem
+    httpOptions:
+      verify: false
+    registrar:
+    - enrollId: admin
+      enrollSecret: adminpw

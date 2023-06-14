@@ -1,0 +1,64 @@
+name: Fabric
+version: "2.0.0"
+
+caliper:
+  blockchain: fabric
+  sutOptions:
+     mutualTls: false
+
+info:
+  Version: 1.1.0
+  Size: 3 Orgs with 7 Peers
+  Orderer: Raft
+  Distribution: Single Host
+  StateDB: GoLevelDB
+
+
+channels:
+  - channelName: mychannel
+    contracts:
+    - id: freight
+      contractID: freight
+      
+            
+organizations:
+  - mspid: Consignor
+    identities:
+      certificates:
+      - name: 'admin.consignor.demo.com'
+        admin: true
+        clientPrivateKey:
+          path : 'organizations/peerOrganizations/consignor.demo.com/users/Admin@consignor.demo.com/msp/keystore/16530d78e80d35e2dbd5aa85bb7afc248e82559815fe113b6a43007781200f8a_sk'
+        clientSignedCert: 
+          path : 'organizations/peerOrganizations/consignor.demo.com/users/Admin@consignor.demo.com/msp/signcerts/cert.pem'
+    connectionProfile:
+      path: './Org1Connection.yaml'
+      discover: true
+
+  - mspid: MiddleMen
+    identities:
+      certificates:
+      - name: 'admin.middlemen.demo.com'
+        admin: true
+        clientPrivateKey:
+          path : 'organizations/peerOrganizations/middlemen.demo.com/users/Admin@middlemen.demo.com/msp/keystore/c61c37ea71a36dc3c69432d4386c33f2d1e988cdd72dcd5441a315c19556a8f1_sk'
+        clientSignedCert:
+          path : 'organizations/peerOrganizations/middlemen.demo.com/users/Admin@middlemen.demo.com/msp/signcerts/cert.pem'
+    connectionProfile:
+      path: './Org2Connection.yaml'
+      discover: true
+  
+  - mspid: Consignee
+    identities:
+      certificates:
+      - name: 'admin.consignee.demo.com'
+        admin: true
+        clientPrivateKey:
+          path : 'organizations/peerOrganizations/consignee.demo.com/users/Admin@consignee.demo.com/msp/keystore/e767a67c4f1aa817ce57c097eac2abba9392131f5cfd6fd629829f2fd4379d1f_sk'
+        clientSignedCert: 
+          path : 'organizations/peerOrganizations/consignee.demo.com/users/Admin@consignee.demo.com/msp/signcerts/cert.pem'
+    connectionProfile:
+      path: './Org3Connection.yaml'
+      discover: true
+  
+    

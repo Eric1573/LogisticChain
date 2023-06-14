@@ -1,0 +1,388 @@
+version: "3.7"
+
+volumes:
+  orderer.demo.com:
+  peer0.consignor.demo.com:
+  peer0.middlemen.demo.com:
+  peer1.middlemen.demo.com:
+  peer2.middlemen.demo.com:
+  peer3.middlemen.demo.com:
+  peer4.middlemen.demo.com:
+  peer0.consignee.demo.com:
+
+networks:
+  test:
+    name: fabric_test
+
+services:
+  orderer.demo.com:
+    container_name: orderer.demo.com
+    image: hyperledger/fabric-orderer:latest
+    labels:
+      service: hyperledger-fabric
+    environment:
+      - FABRIC_LOGGING_SPEC=INFO
+      - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
+      - ORDERER_GENERAL_LISTENPORT=9050
+      - ORDERER_GENERAL_LOCALMSPID=OrdererMSP
+      - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
+      # enabled TLS
+      - ORDERER_GENERAL_TLS_ENABLED=true
+      - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
+      - ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
+      - ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      - ORDERER_GENERAL_CLUSTER_CLIENTCERTIFICATE=/var/hyperledger/orderer/tls/server.crt
+      - ORDERER_GENERAL_CLUSTER_CLIENTPRIVATEKEY=/var/hyperledger/orderer/tls/server.key
+      - ORDERER_GENERAL_CLUSTER_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      - ORDERER_GENERAL_BOOTSTRAPMETHOD=none
+      - ORDERER_CHANNELPARTICIPATION_ENABLED=true
+      - ORDERER_ADMIN_TLS_ENABLED=true
+      - ORDERER_ADMIN_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
+      - ORDERER_ADMIN_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
+      - ORDERER_ADMIN_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      - ORDERER_ADMIN_TLS_CLIENTROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      - ORDERER_ADMIN_LISTENADDRESS=0.0.0.0:9053
+      - ORDERER_OPERATIONS_LISTENADDRESS=orderer.demo.com:9442
+      - ORDERER_METRICS_PROVIDER=prometheus
+    working_dir: /root
+    command: orderer
+    volumes:
+      - ./organizations/ordererOrganizations/demo.com/orderers/orderer.demo.com/msp:/var/hyperledger/orderer/msp
+      - ./organizations/ordererOrganizations/demo.com/orderers/orderer.demo.com/tls/:/var/hyperledger/orderer/tls
+      - orderer.demo.com:/var/hyperledger/production/orderer
+    ports:
+      - 9050:9050
+      - 9053:9053
+      - 9442:9442
+    networks:
+      - test
+
+  peer0.consignor.demo.com:
+    container_name: peer0.consignor.demo.com
+    image: hyperledger/fabric-peer:latest
+    labels:
+      service: hyperledger-fabric
+    environment:
+      - FABRIC_CFG_PATH=/etc/hyperledger/peercfg
+      - FABRIC_LOGGING_SPEC=INFO
+      #- FABRIC_LOGGING_SPEC=DEBUG
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_PROFILE_ENABLED=false
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+      # Peer specific variables
+      - CORE_PEER_ID=peer0.consignor.demo.com
+      - CORE_PEER_ADDRESS=peer0.consignor.demo.com:2051
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:2051
+      - CORE_PEER_CHAINCODEADDRESS=peer0.consignor.demo.com:2052
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:2052
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.consignor.demo.com:2051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.consignor.demo.com:2051
+      - CORE_PEER_LOCALMSPID=Consignor
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp
+      - CORE_OPERATIONS_LISTENADDRESS=peer0.consignor.demo.com:9441
+      - CORE_METRICS_PROVIDER=prometheus
+      - CHAINCODE_AS_A_SERVICE_BUILDER_CONFIG={"peername":"peer0consignor"}
+      - CORE_CHAINCODE_EXECUTETIMEOUT=300s
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=fabric_test
+    volumes:
+      - ./organizations/peerOrganizations/consignor.demo.com/peers/peer0.consignor.demo.com:/etc/hyperledger/fabric
+      - peer0.consignor.demo.com:/var/hyperledger/production
+      - ./peercfg/org1:/etc/hyperledger/peercfg
+      - /var/run/docker.sock:/host/var/run/docker.sock
+    working_dir: /root
+    command: peer node start
+    ports:
+      - 2051:2051
+      - 9441:9441
+    networks:
+      - test
+
+  peer0.middlemen.demo.com:
+    container_name: peer0.middlemen.demo.com
+    image: hyperledger/fabric-peer:latest
+    labels:
+      service: hyperledger-fabric
+    environment:
+      - FABRIC_CFG_PATH=/etc/hyperledger/peercfg
+      - FABRIC_LOGGING_SPEC=INFO
+      #- FABRIC_LOGGING_SPEC=DEBUG
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_PROFILE_ENABLED=false
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+      # Peer specific variables
+      - CORE_PEER_ID=peer0.middlemen.demo.com
+      - CORE_PEER_ADDRESS=peer0.middlemen.demo.com:3051
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:3051
+      - CORE_PEER_CHAINCODEADDRESS=peer0.middlemen.demo.com:3052
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:3052
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.middlemen.demo.com:3051
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.middlemen.demo.com:3051
+      - CORE_PEER_LOCALMSPID=MiddleMen
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp
+      - CORE_OPERATIONS_LISTENADDRESS=peer0.middlemen.demo.com:9444
+      - CORE_METRICS_PROVIDER=prometheus
+      - CHAINCODE_AS_A_SERVICE_BUILDER_CONFIG={"peername":"peer0middlemen"}
+      - CORE_CHAINCODE_EXECUTETIMEOUT=300s
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=fabric_test
+    volumes:
+      - ./organizations/peerOrganizations/middlemen.demo.com/peers/peer0.middlemen.demo.com:/etc/hyperledger/fabric
+      - peer0.middlemen.demo.com:/var/hyperledger/production
+      - ./peercfg/org2:/etc/hyperledger/peercfg
+      - /var/run/docker.sock:/host/var/run/docker.sock
+    working_dir: /root
+    command: peer node start
+    ports:
+      - 3051:3051
+      - 9444:9444
+    networks:
+      - test
+
+  peer1.middlemen.demo.com:
+    container_name: peer1.middlemen.demo.com
+    image: hyperledger/fabric-peer:latest
+    labels:
+      service: hyperledger-fabric
+    environment:
+      - FABRIC_CFG_PATH=/etc/hyperledger/peercfg
+      - FABRIC_LOGGING_SPEC=INFO
+      #- FABRIC_LOGGING_SPEC=DEBUG
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_PROFILE_ENABLED=false
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+      # Peer specific variables
+      - CORE_PEER_ID=peer1.middlemen.demo.com
+      - CORE_PEER_ADDRESS=peer1.middlemen.demo.com:4051
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:4051
+      - CORE_PEER_CHAINCODEADDRESS=peer1.middlemen.demo.com:4052
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:4052
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer1.middlemen.demo.com:4051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.middlemen.demo.com:4051
+      - CORE_PEER_LOCALMSPID=MiddleMen
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp
+      - CORE_OPERATIONS_LISTENADDRESS=peer1.middlemen.demo.com:9445
+      - CORE_METRICS_PROVIDER=prometheus
+      - CHAINCODE_AS_A_SERVICE_BUILDER_CONFIG={"peername":"peer1middlenmen"}
+      - CORE_CHAINCODE_EXECUTETIMEOUT=300s
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=fabric_test
+    volumes:
+      - ./organizations/peerOrganizations/middlemen.demo.com/peers/peer1.middlemen.demo.com:/etc/hyperledger/fabric
+      - peer1.middlemen.demo.com:/var/hyperledger/production
+      - ./peercfg/org2:/etc/hyperledger/peercfg
+      - /var/run/docker.sock:/host/var/run/docker.sock
+    working_dir: /root
+    command: peer node start
+    ports:
+      - 4051:4051
+      - 9445:9445
+    networks:
+      - test
+
+  peer2.middlemen.demo.com:
+    container_name: peer2.middlemen.demo.com
+    image: hyperledger/fabric-peer:latest
+    labels:
+      service: hyperledger-fabric
+    environment:
+      - FABRIC_CFG_PATH=/etc/hyperledger/peercfg
+      - FABRIC_LOGGING_SPEC=INFO
+      #- FABRIC_LOGGING_SPEC=DEBUG
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_PROFILE_ENABLED=false
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+      # Peer specific variables
+      - CORE_PEER_ID=peer2.middlemen.demo.com
+      - CORE_PEER_ADDRESS=peer2.middlemen.demo.com:5051
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:5051
+      - CORE_PEER_CHAINCODEADDRESS=peer2.middlemen.demo.com:5052
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:5052
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer2.middlemen.demo.com:5051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer2.middlemen.demo.com:5051
+      - CORE_PEER_LOCALMSPID=MiddleMen
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp
+      - CORE_OPERATIONS_LISTENADDRESS=peer2.middlemen.demo.com:9446
+      - CORE_METRICS_PROVIDER=prometheus
+      - CHAINCODE_AS_A_SERVICE_BUILDER_CONFIG={"peername":"peer2middlemen"}
+      - CORE_CHAINCODE_EXECUTETIMEOUT=300s
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=fabric_test
+    volumes:
+      - ./organizations/peerOrganizations/middlemen.demo.com/peers/peer2.middlemen.demo.com:/etc/hyperledger/fabric
+      - peer2.middlemen.demo.com:/var/hyperledger/production
+      - ./peercfg/org2:/etc/hyperledger/peercfg
+      - /var/run/docker.sock:/host/var/run/docker.sock
+    working_dir: /root
+    command: peer node start
+    ports:
+      - 5051:5051
+      - 9446:9446
+    networks:
+      - test
+
+  peer3.middlemen.demo.com:
+    container_name: peer3.middlemen.demo.com
+    image: hyperledger/fabric-peer:latest
+    labels:
+      service: hyperledger-fabric
+    environment:
+      - FABRIC_CFG_PATH=/etc/hyperledger/peercfg
+      - FABRIC_LOGGING_SPEC=INFO
+      #- FABRIC_LOGGING_SPEC=DEBUG
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_PROFILE_ENABLED=false
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+      # Peer specific variables
+      - CORE_PEER_ID=peer3.middlemen.demo.com
+      - CORE_PEER_ADDRESS=peer3.middlemen.demo.com:6051
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:6051
+      - CORE_PEER_CHAINCODEADDRESS=peer3.middlemen.demo.com:6052
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:6052
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer3.middlemen.demo.com:6051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer3.middlemen.demo.com:6051
+      - CORE_PEER_LOCALMSPID=MiddleMen
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp
+      - CORE_OPERATIONS_LISTENADDRESS=peer3.middlemen.demo.com:9447
+      - CORE_METRICS_PROVIDER=prometheus
+      - CHAINCODE_AS_A_SERVICE_BUILDER_CONFIG={"peername":"peer3middlenmen"}
+      - CORE_CHAINCODE_EXECUTETIMEOUT=300s
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=fabric_test
+    volumes:
+      - ./organizations/peerOrganizations/middlemen.demo.com/peers/peer3.middlemen.demo.com:/etc/hyperledger/fabric
+      - peer3.middlemen.demo.com:/var/hyperledger/production
+      - ./peercfg/org2:/etc/hyperledger/peercfg
+      - /var/run/docker.sock:/host/var/run/docker.sock
+    working_dir: /root
+    command: peer node start
+    ports:
+      - 6051:6051
+      - 9447:9447
+    networks:
+      - test
+
+  peer4.middlemen.demo.com:
+    container_name: peer4.middlemen.demo.com
+    image: hyperledger/fabric-peer:latest
+    labels:
+      service: hyperledger-fabric
+    environment:
+      - FABRIC_CFG_PATH=/etc/hyperledger/peercfg
+      - FABRIC_LOGGING_SPEC=INFO
+      #- FABRIC_LOGGING_SPEC=DEBUG
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_PROFILE_ENABLED=false
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+      # Peer specific variables
+      - CORE_PEER_ID=peer4.middlemen.demo.com
+      - CORE_PEER_ADDRESS=peer4.middlemen.demo.com:7051
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:7051
+      - CORE_PEER_CHAINCODEADDRESS=peer4.middlemen.demo.com:7052
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:7052
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer4.middlemen.demo.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer4.middlemen.demo.com:7051
+      - CORE_PEER_LOCALMSPID=MiddleMen
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp
+      - CORE_OPERATIONS_LISTENADDRESS=peer4.middlemen.demo.com:9448
+      - CORE_METRICS_PROVIDER=prometheus
+      - CHAINCODE_AS_A_SERVICE_BUILDER_CONFIG={"peername":"peer4middlemen"}
+      - CORE_CHAINCODE_EXECUTETIMEOUT=300s
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=fabric_test
+    volumes:
+      - ./organizations/peerOrganizations/middlemen.demo.com/peers/peer4.middlemen.demo.com:/etc/hyperledger/fabric
+      - peer4.middlemen.demo.com:/var/hyperledger/production
+      - ./peercfg/org2:/etc/hyperledger/peercfg
+      - /var/run/docker.sock:/host/var/run/docker.sock
+    working_dir: /root
+    command: peer node start
+    ports:
+      - 7051:7051
+      - 9448:9448
+    networks:
+      - test
+
+  peer0.consignee.demo.com:
+    container_name: peer0.consignee.demo.com
+    image: hyperledger/fabric-peer:latest
+    labels:
+      service: hyperledger-fabric
+    environment:
+      - FABRIC_CFG_PATH=/etc/hyperledger/peercfg
+      - FABRIC_LOGGING_SPEC=INFO
+      #- FABRIC_LOGGING_SPEC=DEBUG
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_PROFILE_ENABLED=false
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+      # Peer specific variables
+      - CORE_PEER_ID=peer0.consignee.demo.com
+      - CORE_PEER_ADDRESS=peer0.consignee.demo.com:8051
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:8051
+      - CORE_PEER_CHAINCODEADDRESS=peer0.consignee.demo.com:8052
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:8052
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.consignee.demo.com:8051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.consignee.demo.com:8051
+      - CORE_PEER_LOCALMSPID=Consignee
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp
+      - CORE_OPERATIONS_LISTENADDRESS=peer0.consignee.demo.com:9449
+      - CORE_METRICS_PROVIDER=prometheus
+      - CHAINCODE_AS_A_SERVICE_BUILDER_CONFIG={"peername":"peer0consignee"}
+      - CORE_CHAINCODE_EXECUTETIMEOUT=300s
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=fabric_test
+    volumes:
+      - ./organizations/peerOrganizations/consignee.demo.com/peers/peer0.consignee.demo.com:/etc/hyperledger/fabric
+      - peer0.consignee.demo.com:/var/hyperledger/production
+      - ./peercfg/org3:/etc/hyperledger/peercfg
+      - /var/run/docker.sock:/host/var/run/docker.sock
+    working_dir: /root
+    command: peer node start
+    ports:
+      - 8051:8051
+      - 9449:9449
+    networks:
+      - test
+
+  cli:
+    container_name: cli
+    image: hyperledger/fabric-tools:latest
+    labels:
+      service: hyperledger-fabric
+    tty: true
+    stdin_open: true
+    environment:
+      - GOPATH=/opt/gopath
+      - FABRIC_LOGGING_SPEC=INFO
+      - FABRIC_CFG_PATH=/etc/hyperledger/peercfg
+      #- FABRIC_LOGGING_SPEC=DEBUG
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: /bin/bash
+    volumes:
+      - ./organizations:/opt/gopath/src/github.com/hyperledger/fabric/peer/organizations
+      - ./scripts:/opt/gopath/src/github.com/hyperledger/fabric/peer/scripts/
+      - ./peercfg/cli:/etc/hyperledger/peercfg
+    depends_on:
+      - peer0.consignor.demo.com
+      - peer0.middlemen.demo.com
+      - peer1.middlemen.demo.com
+      - peer2.middlemen.demo.com
+      - peer3.middlemen.demo.com
+      - peer4.middlemen.demo.com
+      - peer0.consignee.demo.com
+    networks:
+      - test
