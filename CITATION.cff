@@ -1,0 +1,11 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: "Ni"
+  given-names: "Lifeng"
+  orcid: "https://orcid.org/0009-0000-6790-8118"
+title: "LogisticChain"
+version: 2.0.4
+doi: 10.5281/zenodo.8045948
+date-released: 2023-6-15
+url: "https://github.com/Eric1573/LogisticChain"
