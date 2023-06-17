@@ -11,3 +11,6 @@ LogisticChain facilitates the following functionalities:
 
 
 <div align=center><img width="532" height="320" src="https://github.com/Eric1573/LogisticChain/blob/main/IMG/Slide1.png"/></div>
+
+ Organizations and Peer nodes：
+ 
