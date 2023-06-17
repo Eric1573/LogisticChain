@@ -10,5 +10,4 @@ LogisticChain facilitates the following functionalities:
 5. All participants possess the ability to ascertain the logistics status at any given moment.
 
 
-![Image text](https://github.com/Eric1573/LogisticChain/blob/main/IMG/Picture%201.png)
-<div align=center><img width="532" height="320" src="https://github.com/Eric1573/LogisticChain/blob/main/IMG/Picture%201.png"/></div>
+<div align=center><img width="532" height="320" src="https://github.com/Eric1573/LogisticChain/blob/main/IMG/Slide1.png"/></div>
