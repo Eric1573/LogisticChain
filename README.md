@@ -15,4 +15,9 @@ LogisticChain facilitates the following functionalities:
 
 
  Organizations and Peer nodes：
+ 1. Consignor Organization (Peer nodes: Consignor)
+ 2. Middleman Organization (Peer nodes: Freight Forwarder, Export Port, Shipping company, Import Port, and Destination Freight Forwarder)
+ 3. Consignee Organization (Peer nodes: Consignee)
+
+
  
