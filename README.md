@@ -11,3 +11,4 @@ LogisticChain facilitates the following functionalities:
 
 
 ![Image text](https://github.com/Eric1573/LogisticChain/blob/main/IMG/Picture%201.png)
+<div align=center><img width="150" height="150" src="https://github.com/Eric1573/LogisticChain/blob/main/IMG/Picture%201.png"/></div>
