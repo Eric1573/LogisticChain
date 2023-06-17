@@ -33,14 +33,17 @@ LogisticChain facilitates the following functionalities:
 7)peer chaincode  invoke -o localhost:9050 --ordererTLSHostnameOverride orderer.demo.com --tls --cafile "$ORDERER_CA" -C mychannel -n freight --peerAddresses localhost:8051 --tlsRootCertFiles "$PEER0_ORG3_CA" --peerAddresses localhost:7051 --tlsRootCertFiles "$PEER0_ORG2_CA"  -c '{"function":"createUser","Args":["Lin","777@pg.com","Consignee","Shanghai3","111222"]}'
 
 2. Consignor signin
-
 1) peer chaincode  invoke -o localhost:9050 --ordererTLSHostnameOverride orderer.demo.com --tls --cafile "$ORDERER_CA" -C mychannel -n freight --peerAddresses localhost:8051 --tlsRootCertFiles "$PEER0_ORG3_CA" --peerAddresses localhost:7051 --tlsRootCertFiles "$PEER0_ORG2_CA"  -c '{"function":"signIn","Args":["User1","111222"]}'                         
 
 3. consignor createProduct
-
 1) peer chaincode  invoke -o localhost:9050 --ordererTLSHostnameOverride orderer.demo.com --tls --cafile "$ORDERER_CA" -C mychannel -n freight --peerAddresses localhost:8051 --tlsRootCertFiles "$PEER0_ORG3_CA" --peerAddresses localhost:7051 --tlsRootCertFiles "$PEER0_ORG2_CA"  -c '{"function":"createProduct","Args":["tesla","User1","1000"]}'  
 2) peer chaincode  invoke -o localhost:9050 --ordererTLSHostnameOverride orderer.demo.com --tls --cafile "$ORDERER_CA" -C mychannel -n freight --peerAddresses localhost:8051 --tlsRootCertFiles "$PEER0_ORG3_CA" --peerAddresses localhost:7051 --tlsRootCertFiles "$PEER0_ORG2_CA"  -c '{"function":"createProduct","Args":["BMW","User2","2000"]}'
-![image](https://github.com/Eric1573/LogisticChain/assets/112923874/94a7f39e-3cc3-4922-8e6b-e746b0fc8cdc)
+
+4. Consignee signin
+peer chaincode  invoke -o localhost:9050 --ordererTLSHostnameOverride orderer.demo.com --tls --cafile "$ORDERER_CA" -C mychannel -n freight --peerAddresses localhost:8051 --tlsRootCertFiles "$PEER0_ORG3_CA" --peerAddresses localhost:7051 --tlsRootCertFiles "$PEER0_ORG2_CA"  -c '{"function":"signIn","Args":["User7","111222"]}'                         
+
+
+
 
 
 
