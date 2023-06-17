@@ -67,7 +67,7 @@ LogisticChain facilitates the following functionalities:
 12. Check all users information
 1) peer chaincode  invoke -o localhost:9050 --ordererTLSHostnameOverride orderer.demo.com --tls --cafile "$ORDERER_CA" -C mychannel -n freight --peerAddresses localhost:8051 --tlsRootCertFiles "$PEER0_ORG3_CA" --peerAddresses localhost:7051 --tlsRootCertFiles "$PEER0_ORG2_CA"  -c '{"function":"queryAll","Args":["User"]}'
 
-
+Close project: ./stopnet.sh
 
 
 
