@@ -8,4 +8,6 @@ LogisticChain facilitates the following functionalities:
 3. The consignee initiates orders in accordance with the product information available in the system.
 4. Middlemen (such as freight forwarders, shipping companies, and ports) assume responsibility for the conveyance and dissemination of goods.
 5. All participants possess the ability to ascertain the logistics status at any given moment.
+
+
 ![Image text](https://github.com/Eric1573/LogisticChain/blob/main/IMG/Picture%201.png)
