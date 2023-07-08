@@ -104,52 +104,54 @@ func (t *PortSupplyChain) Invoke(stub shim.ChaincodeStubInterface) pb.Response {
 	function, args := stub.GetFunctionAndParameters()
 	fmt.Println("invoke is running " + function)
 
-	if function == "initLedger" {
+	switch function {
+	case "initLedger":
 		return t.initLedger(stub, args)
-	} else if function == "signIn" {
+	case "signIn":
 		return t.signIn(stub, args)
-	} else if function == "createUser" {
+	case "createUser":
 		//create a new user
 		return t.createUser(stub, args)
-	} else if function == "createProduct" {
+	case "createProduct":
 		//create a new product
 		return t.createProduct(stub, args)
-	} else if function == "updateProduct" {
+	case "updateProduct":
 		// update a product
 		return t.updateProduct(stub, args)
-	} else if function == "orderProduct" {
+	case "orderProduct":
 		// order a product
 		return t.orderProduct(stub, args)
-	} else if function == "deliveredProduct" {
+	case "deliveredProduct":
 		// Product is delivered
 		return t.deliveredProduct(stub, args)
-	} else if function == "sendToFreightForwarder" {
+	case "sendToFreightForwarder":
 		// send to FreightForwarder
 		return t.sendToFreightForwarder(stub, args)
-	} else if function == "sendToExportPort" {
+	case "sendToExportPort":
 		// send to ExportPort
 		return t.sendToExportPort(stub, args)
-	} else if function == "sendToShippingCompany" {
+	case "sendToShippingCompany":
 		// send to ShippingCompany
 		return t.sendToShippingCompany(stub, args)
-	} else if function == "sendToImportPort" {
+	case "sendToImportPort":
 		// send to ImportPort
 		return t.sendToImportPort(stub, args)
-	} else if function == "sendToDestinationFreightForwarder" {
+	case "sendToDestinationFreightForwarder":
 		// send to DestinationFreightForwarder
 		return t.sendToDestinationFreightForwarder(stub, args)
-	} else if function == "sendToConsignee" {
+	case "sendToConsignee":
 		// send to Consignee
 		return t.sendToConsignee(stub, args)
-	} else if function == "queryAsset" {
+	case "queryAsset":
 		// query any using asset-id
 		return t.queryAsset(stub, args)
-	} else if function == "queryAll" {
+	case "queryAll":
 		// query all assests of a type
 		return t.queryAll(stub, args)
+	default:
+		fmt.Println("invoke did not find func: " + function)
+		return shim.Error("Received unknown function invocation")
 	}
-	fmt.Println("invoke did not find func: " + function)
-	return shim.Error("Received unknown function invocation")
 }
 
 // create this func to count
